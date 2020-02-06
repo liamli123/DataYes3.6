@@ -1,0 +1,66 @@
+研报 | 沪港通 | 电商 | 股票 | 期权 | 主题 | 新闻
+
+搜索 数据类型， 如：港股、基金、行情
+沪深股票日行情
+ 收藏 下载CSV文件 免费试用
+数据描述 : 获取沪深股票未复权日行情信息，包含昨收价、开盘价、最高价、最低价、收盘价、成交量、成交金额等字段（含科创板）。
+
+数据预览 API文档 调用及返回说明 代码样例 常见问题
+接口名
+getMktEqud
+数据起始时间
+1990-12-19
+数据更新频率
+日
+数据发布时间
+15:15
+数据供应商
+通联数据
+接口详细说明
+获取沪深股票未复权日行情信息，包含昨收价、开盘价、最高价、最低价、收盘价、成交量、成交金额等字段（含科创板）。
+使用范例
+/api/market/getMktEqud.json?field=&beginDate=&endDate=&secID=&ticker=688001&tradeDate=20190723
+
+输入参数
+参数名	参数类型	是否必须	是否支持多值	参数说明	参数可选值
+beginDate	Date	否	不支持	起始日期，输入格式“YYYYMMDD”
+endDate	Date	否	不支持	截止日期，输入格式“YYYYMMDD”
+secID	String	多选多	支持	通联编制的证券编码，可使用getSecID获取
+ticker	String	多选多	支持	通用交易代码，如'000001'(可多值输入，最多输入50只)
+tradeDate	Date	多选多	不支持	交易日期，只输入一个日期，可获取到一天全部沪深股票日行情数据
+isOpen	Int32	否	不支持	股票今日是否开盘标记：0-未开盘，1-交易日
+
+输出参数
+参数名	参数类型	参数说明	参数可选值
+secID	String	通联编制的证券编码，可使用getSecID获取
+ticker	String	通用交易代码
+secShortName	String	证券简称
+exchangeCD	String	通联编制的交易市场编码	查看参数可选
+tradeDate	Date	交易日期
+preClosePrice	Double	昨收盘(前复权)
+actPreClosePrice	Double	实际昨收盘价(未复权)
+openPrice	Double	开盘价
+highestPrice	Double	最高价
+lowestPrice	Double	最低价
+closePrice	Double	收盘价
+turnoverVol	Double	成交量
+turnoverValue	Double	成交金额，A股单位为元，B股单位为美元或港币
+dealAmount	Int32	成交笔数
+turnoverRate	Double	日换手率，成交量/无限售流通股数
+accumAdjFactor	Double	累积前复权因子，前复权价=未复权价*累积前复权因子。前复权是对历史行情进行调整，除权除息当日的行情无需调整。最近一次除权除息日至最新交易日期间的价格也无需调整，该期间前复权因子等于1。
+negMarketValue	Double	流通市值，收盘价*无限售流通股数
+marketValue	Double	总市值，收盘价*总股本数
+chgPct	Double	涨跌幅，收盘价/昨收盘价-1
+PE	Double	滚动市盈率，即市盈率TTM，总市值/归属于母公司所有者的净利润TTM
+PE1	Double	动态市盈率，总市值/归属于母公司所有者的净利润（最新一期财报年化）
+PB	Double	市净率，总市值/归属于母公司所有者权益合计
+isOpen	Int32	股票今日是否开盘标记：0-未开盘，1-交易日
+vwap	Double	VWAP，成交金额/成交量
+
+通联数据商城数据商城API文档数据字典我的数据 反馈
+成都孜茂贸易有限公司
+李业
+
+© 2020 DataYes 沪ICP备13045831号  备案 沪公网安备 31011502003276号  咨询热线：4000 820 386 数据商城 0.5.9 用户协议
+
+
