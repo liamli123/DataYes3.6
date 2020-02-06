@@ -59,7 +59,11 @@ def getalldata(td):
 
     #print (json.dumps(dataresult,indent=2))
 
+def readlocaldata(data.json)
+    r=open(data)
+    dataresult = json.loads(r.text)
 
+    return dataresult
 
 
 if __name__ =='__main__':
@@ -69,6 +73,9 @@ if __name__ =='__main__':
     #d[data][0][secId]
     #print("\nCurrent Date: ", currentdate.strftime('%Y%m%d'))
     #print("52 Weeks before current date: ", ftw.strftime('%Y%m%d'))
+
+
+
     currentdate = date.today()-timedelta(days=1)
     ftw= (date.today() - timedelta(weeks=52))
     d = getalldata(currentdate)
