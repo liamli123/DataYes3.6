@@ -4,22 +4,20 @@ import requests
 from datetime import date, timedelta
 
 
-
 def getalldata(td):
 
-    token = "75c383a6bba684f08359093d22146952c2ff1ee6f1369fb3f6f21c021bfe7674"
+    token = "f5e83593972fd7bd68b6891076decb1b0dc1693f34b891e81a6e5b9ab937fa2e"
     headers = {"Authorization": "Bearer " + token}
     apiurl = 'https://api.wmcloud.com/data/v1//api/market/getMktEqud.json?'
-    param = {'beginDate': '', 'endDate': '', 'secID': '', 'ticker': '', 'tradeDate': td,'isOpen': ''}
+    param = {'beginDate': '', 'endDate': '', 'secID': '', 'ticker': '', 'tradeDate': td, 'isOpen': ''}
     r=requests.get(apiurl, params=param, headers=headers)
-    with open(str(td) + '.json', 'w') as file:
-        json.dump(r, file)
-
-
 
     dataresult = json.loads(r.text)
 
+    with open(str(td) + '.json', 'w') as file:
+        json.dump(dataresult, file)
 
+    return dataresult
 
     #the returned is a dictionary
     #key
@@ -55,30 +53,27 @@ def getalldata(td):
                     # isOpen
                     # vwap
 
-    return dataresult
+    # print (json.dumps(dataresult,indent=2))
 
-    #print (json.dumps(dataresult,indent=2))
 
-def readlocaldata(data.json)
-    r=open(data)
+def readlocaldata(data):
+
+    r = open(data)
     dataresult = json.loads(r.text)
 
     return dataresult
 
 
-if __name__ =='__main__':
+if __name__ == '__main__':
 
+    # len(d['data'])=3873
+    # d[data][0][secId]
+    # print("\nCurrent Date: ", currentdate.strftime('%Y%m%d'))
+    # print("52 Weeks before current date: ", ftw.strftime('%Y%m%d'))
 
-    #len(d['data'])=3873
-    #d[data][0][secId]
-    #print("\nCurrent Date: ", currentdate.strftime('%Y%m%d'))
-    #print("52 Weeks before current date: ", ftw.strftime('%Y%m%d'))
+    currentdate = (date.today()-timedelta(days=2)).strftime('%Y%m%d')
+    ftw = (date.today() - timedelta(weeks=52)).strftime('%Y%m%d')
 
-
-
-    currentdate = date.today()-timedelta(days=1)
-    ftw= (date.today() - timedelta(weeks=52))
-    d = getalldata(currentdate)
-
+    d = getalldata(ftw)
     for keys in d:
-        print (keys)
+        print  (keys)
