@@ -123,5 +123,6 @@ if __name__ == '__main__':
     #     print(findname(item['ticker'], d['data']))
 
     print(d1[0]['tradeDate'])
-    print(find52low(d1, d2))
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
+        print(find52low(d1, d2))
 
