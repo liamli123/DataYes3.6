@@ -4,7 +4,7 @@ import requests
 from datetime import date, timedelta
 
 
-def getalldata(td):
+def readalldata(td):
 
     token = "f5e83593972fd7bd68b6891076decb1b0dc1693f34b891e81a6e5b9ab937fa2e"
     headers = {"Authorization": "Bearer " + token}
@@ -58,10 +58,39 @@ def getalldata(td):
 
 def readlocaldata(data):
 
-    r = open(data)
-    dataresult = json.loads(r.text)
+    with open(data, 'r') as myfile:
+
+        d = myfile.read()
+
+    dataresult = json.loads(d)
 
     return dataresult
+
+
+def findname(ticker, alldata):
+    for i in alldata:
+        if i['ticker'] == ticker:
+            return i['secShortName']
+
+
+
+def findcloseprice(ticker, alldata):
+    for i in alldata:
+        if i['ticker'] == ticker:
+            return i['closePrice']
+
+
+def gettickerdata(ticker, alldata):
+    for i in alldata:
+        if i['ticker'] == ticker:
+                for keys in i:
+                    print(keys)
+                    print(i[keys])
+
+def find52low(d1, d2):
+    for i in d1:
+        low = i['closePrice'] / findcloseprice(i['ticker'], d2)
+        print(low)
 
 
 if __name__ == '__main__':
@@ -74,6 +103,17 @@ if __name__ == '__main__':
     currentdate = (date.today()-timedelta(days=2)).strftime('%Y%m%d')
     ftw = (date.today() - timedelta(weeks=52)).strftime('%Y%m%d')
 
-    d = getalldata(ftw)
-    for keys in d:
-        print  (keys)
+    #d = readalldata(ftw)
+
+    d = readlocaldata('20200205.json')['data']
+
+    # for item in d['data']:
+    #     print(item['closePrice']/findcloseprice(item['ticker'], d['data']))
+    #     print(findname(item['ticker'], d['data']))
+
+    #gettickerdata
+
+
+    #add result to dict, and sort dict
+    #parallel print
+    find52low(d, d)
