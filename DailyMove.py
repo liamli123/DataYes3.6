@@ -3,6 +3,8 @@ import json
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
+import progressbar as pb
+import sys
 
 
 def readalldata(td):
@@ -111,6 +113,7 @@ def find52low(td):
         except:
             pass
     df = df.sort_values(by='52week change', ascending=1)
+    df = df.reset_index(drop=True)
     return df
 
 
@@ -127,7 +130,7 @@ def backtest(tradedate, testdate):
     readalldata(testdate)
 
     d1 = readlocaldata(currentdate + '.json')['data']
-    d3 = readlocaldata(ftw + '.json')['data']
+    d3 = readlocaldata(testdate + '.json')['data']
     # for item in d['data']:
     #     print(item['closePrice']/findcloseprice(item['ticker'], d['data']))
     #     print(findname(item['ticker'], d['data']))
@@ -135,11 +138,15 @@ def backtest(tradedate, testdate):
     df = find52low(currentdate)
     df[testdate + ' Price'] = None
     df[testdate + ' Change'] = None
+    allrows = len(df)
     j = 0
-    while j < len(df):
-        df.loc[j, testdate+' Price'] = findcloseprice(df.loc[j, 'ticker'], d3)
-        df.loc[j, testdate+' Change'] = df.loc[j, testdate+' Price']/df.loc[j, 'TradeDate Close Price']-1
-        j = j+1
+    while j < 20:
+        try:
+            df.loc[j, testdate+' Price'] = findcloseprice(df.loc[j, 'ticker'], d3)
+            df.loc[j, testdate+' Change'] = (df.loc[j, testdate+' Price']/df.loc[j, 'TradeDate Close Price']-1)*100
+            j = j+1
+        except:
+            pass
 
     print('Trade Date:  ' + d1[0]['tradeDate'])
 
@@ -148,7 +155,10 @@ def backtest(tradedate, testdate):
 
 
 if __name__ == '__main__':
-    #
+
+        backtest('20180312', '20180412')
+
+
 
     # readalldata to load two range of data
 
@@ -156,5 +166,7 @@ if __name__ == '__main__':
 
     # backtest(finddate, test date) - print dataframe
 
-    # print(backtest('20190211', '20200208'))
-    print(find52low('20190211'))
+    # print(find52low('20190211'))
+
+    # d = readlocaldata('20200210.json')['data']
+    # print(findcloseprice('300304', d))
