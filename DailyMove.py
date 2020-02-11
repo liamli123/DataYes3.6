@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
-from datetime import date, timedelta
+from datetime import datetime, timedelta
 import pandas as pd
 
 
@@ -88,29 +88,12 @@ def gettickerdata(ticker, alldata): # display all info of a ticker
                     print(keys)
                     print(i[keys])
 
-def find52low(d1, d2):
-    df = pd.DataFrame(columns=('ticker', 'Name', '52week change'))
-    for i in d1:
-        try:
-            newrow = {'ticker': i['ticker'], 'Name': findname(i['ticker'], d1), '52week change': (i['closePrice']/findcloseprice(i['ticker'], d2)-1)*100} #current price / 52 weeks ago
-            df = df.append(newrow, ignore_index=True)
-        except:
-            pass
-    df = df.sort_values(by='52week change', ascending=1)
-    return df
 
-        # print(i['closePrice'] / findcloseprice(i['ticker'], d2)
+def find52low(td):
 
+    currentdate = datetime.strptime(td, '%Y%m%d').strftime('%Y%m%d')
 
-if __name__ == '__main__':
-
-    # len(d['data'])=3873
-    # d[data][0][secId]
-    # print("\nCurrent Date: ", currentdate.strftime('%Y%m%d'))
-    # print("52 Weeks before current date: ", ftw.strftime('%Y%m%d'))
-
-    currentdate = (date.today()-timedelta(days=0)).strftime('%Y%m%d')
-    ftw = (date.today() - timedelta(weeks=52)).strftime('%Y%m%d')
+    ftw = (datetime.strptime(td, '%Y%m%d') - timedelta(weeks=52)).strftime('%Y%m%d')
 
     readalldata(currentdate)
     readalldata(ftw)
@@ -118,11 +101,60 @@ if __name__ == '__main__':
     d1 = readlocaldata(currentdate + '.json')['data']
     d2 = readlocaldata(ftw + '.json')['data']
 
+    df = pd.DataFrame(columns=('ticker', 'Name', '52week change', 'TradeDate Close Price'))
+    for i in d1:
+        try:
+            newrow = {'ticker': i['ticker'], 'Name': findname(i['ticker'], d1),
+                      '52week change': (i['closePrice']/findcloseprice(i['ticker'], d2)-1)*100,
+                      'TradeDate Close Price': i['closePrice']}
+            df = df.append(newrow, ignore_index=True)
+        except:
+            pass
+    df = df.sort_values(by='52week change', ascending=1)
+    return df
+
+
+def backtest(tradedate, testdate):
+
+    currentdate = datetime.strptime(tradedate, '%Y%m%d').strftime('%Y%m%d')
+
+    ftw = (datetime.strptime(tradedate, '%Y%m%d') - timedelta(weeks=52)).strftime('%Y%m%d')
+
+    testdate = datetime.strptime(testdate, '%Y%m%d').strftime('%Y%m%d')
+
+    readalldata(currentdate)
+    readalldata(ftw)
+    readalldata(testdate)
+
+    d1 = readlocaldata(currentdate + '.json')['data']
+    d3 = readlocaldata(ftw + '.json')['data']
     # for item in d['data']:
     #     print(item['closePrice']/findcloseprice(item['ticker'], d['data']))
     #     print(findname(item['ticker'], d['data']))
 
-    print(d1[0]['tradeDate'])
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):  # more options can be specified also
-        print(find52low(d1, d2))
+    df = find52low(currentdate)
+    df[testdate + ' Price'] = None
+    df[testdate + ' Change'] = None
+    j = 0
+    while j < len(df):
+        df.loc[j, testdate+' Price'] = findcloseprice(df.loc[j, 'ticker'], d3)
+        df.loc[j, testdate+' Change'] = df.loc[j, testdate+' Price']/df.loc[j, 'TradeDate Close Price']-1
+        j = j+1
 
+    print('Trade Date:  ' + d1[0]['tradeDate'])
+
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None):  # more options can be specified also
+        print(df)
+
+
+if __name__ == '__main__':
+    #
+
+    # readalldata to load two range of data
+
+    # find52low(finddate) - return dataframe
+
+    # backtest(finddate, test date) - print dataframe
+
+    # print(backtest('20190211', '20200208'))
+    print(find52low('20190211'))
