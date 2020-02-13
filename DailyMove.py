@@ -108,7 +108,8 @@ def find52low(td):
         try:
             newrow = {'ticker': i['ticker'], 'Name': findname(i['ticker'], d1),
                       '52week change': (i['closePrice']/findcloseprice(i['ticker'], d2)-1)*100,
-                      'TradeDate Close Price': i['closePrice']}
+                      'TradeDate Close Price': i['closePrice'],
+                      '          PE': i['PE']}
             df = df.append(newrow, ignore_index=True)
         except:
             pass
@@ -140,23 +141,26 @@ def backtest(tradedate, testdate):
     df[testdate + ' Change'] = None
     allrows = len(df)
     j = 0
-    while j < 20:
+    while j < allrows:
         try:
             df.loc[j, testdate+' Price'] = findcloseprice(df.loc[j, 'ticker'], d3)
             df.loc[j, testdate+' Change'] = (df.loc[j, testdate+' Price']/df.loc[j, 'TradeDate Close Price']-1)*100
-            j = j+1
         except:
             pass
+        j = j+1
 
     print('Trade Date:  ' + d1[0]['tradeDate'])
 
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None):  # more options can be specified also
+    df = df.sort_values(by=testdate+' Change', ascending=0)
+
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None,
+                           'display.colheader_justify', 'left'):  # more options can be specified also
         print(df)
 
 
 if __name__ == '__main__':
 
-        backtest('20180312', '20180412')
+    backtest('20170712', '20190813')
 
 
 
