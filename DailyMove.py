@@ -160,8 +160,10 @@ def backtest(tradedate, testdate):
 
 if __name__ == '__main__':
 
-    backtest('20170712', '20190813')
+    # backtest('20170712', '20190813')
 
+    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None,):
+        print(find52low('20200221'))
 
 
     # readalldata to load two range of data
