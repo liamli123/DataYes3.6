@@ -3,13 +3,11 @@ import json
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
-import progressbar as pb
-import sys
 
 
 def readalldata(td):
 
-    token = "f5e83593972fd7bd68b6891076decb1b0dc1693f34b891e81a6e5b9ab937fa2e"
+    token = "7729e4b39cf01d67214d0273b4ac59f8890bb4cfbd2ae4fe150143dd02aa8ef8"
     headers = {"Authorization": "Bearer " + token}
     apiurl = 'https://api.wmcloud.com/data/v1//api/market/getMktEqud.json?'
     param = {'beginDate': '', 'endDate': '', 'secID': '', 'ticker': '', 'tradeDate': td, 'isOpen': ''}
@@ -161,10 +159,11 @@ def backtest(tradedate, testdate):
 if __name__ == '__main__':
 
     # backtest('20170712', '20190813')
-
     with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', None,):
-        print(find52low('20200221'))
+      print(find52low('20200331'))
 
+    # td = datetime.today().strftime('%Y%m%d')
+    # find52low(td).to_csv(str(td)+' result', sep='\t')
 
     # readalldata to load two range of data
 
